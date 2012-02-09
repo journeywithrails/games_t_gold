@@ -1,0 +1,29 @@
+.yui-b
+  .box
+    %h3
+      =:why_sign_up.l
+    %ul.list.checks
+    %li 
+      = :sign_up_reason_1.l
+    %li 
+      = :sign_up_reason_2.l
+
+  .box.alt
+    %h3=:tips.l
+    %p
+      =:after_signing_up_youll_receive_an_e_mail_confirmation_message.l
+    %p
+      =:click_the_activation_link_in_the_e_mail_to_log_in.l
+    %p= link_to :already_have_an_account.l, "/login"
+
+#yui-main
+  .yui-b
+    .box
+      %h3=:sign_up.l
+      .yui-g
+        .yui-u.first
+          #player.big-link
+            = link_to image_tag('sport_soccer.png', :alt => 'Player', :size => '16x16') + ' As a Player', new_player_path(:inviter => params[:inviter_id])
+        .yui-u
+          #sponsor.big-link
+            = link_to image_tag('money_dollar.png', :alt => 'Sponsor', :size => '16x16') + ' As a Sponsor', new_sponsor_path(:inviter => params[:inviter_id])

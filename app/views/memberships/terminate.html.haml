@@ -1,0 +1,23 @@
+#yui-main
+  .yui-b.box
+    %h3= @team.name
+    .yui-gf
+      .yui-u.first
+        = team_logo @team
+
+      .yui-u
+        = team_origin @team
+
+        - unless @team.description.blank?
+          %p= sanitize(@team.description_html)
+
+        %em= "You have been a member since #{@membership.created_at.to_date.to_formatted_s(:long)}."
+
+    .box.alt.first_alt
+      %h3= "Are you sure you want to leave this team?"
+      %p= link_to 'Yes. Adios!', team_membership_path(@team, @membership), :method => :delete
+      = link_to 'I changed my mind.', team_path(@team)
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to team profile', team_path(@team)

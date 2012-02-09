@@ -1,0 +1,14 @@
+%label= :name.l
+= form.text_field :name, :class => 'primary'
+
+%label Logo
+= form.file_field :uploaded_data
+
+%label= :tags.l
+= text_field_tag 'tag_list', @team.tag_list, { :autocomplete => 'off', :size => 35 }
+#tag_list_auto_complete.auto_complete
+= auto_complete_field 'tag_list', { :url => { :controller => 'tags', :action => 'auto_complete_for_tag_name' }, :tokens => [',', ' ']  }
+
+#team_descripion
+  %label= :description.l
+  = form.text_area :description, :rows => 7

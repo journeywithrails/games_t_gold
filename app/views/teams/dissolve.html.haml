@@ -1,0 +1,34 @@
+- @meta = { :description => "#{@team.name.capitalize}.", :keywords => "#{@team.tags.join(', ') if @team.tags}", :robots => AppConfig.robots_meta_show_content}
+- @section = 'teams'
+- @page_title = "Dissolve #{@team.name}"
+
+#yui-main
+  .yui-b.box
+    %h3= @team.name
+
+    = team_origin(@team)
+
+    .yui-g
+      .yui-u.first
+        = team_logo(@team, :medium)
+      .yui-u
+        - unless @team.description.blank?
+          %p= sanitize(@team.description_html)
+
+    .box.alt.first_alt
+      %h3= "Are you sure you want to dissolve this team?"
+      %p= link_to 'Yes. Adios!', team_path(@team), :method => :delete
+      = link_to 'I changed my mind.', team_path(@team)
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Logo
+    .box.centered= team_logo(@team)
+
+  .box.alt
+    %h3 Team Admin Controls 
+    = link_to '&raquo; Return to team profile', team_path(@team)
+    %br
+    = link_to '&raquo; Edit team profile', edit_team_path(@team)
+    %br
+    = link_to '&raquo; Invite people to join'

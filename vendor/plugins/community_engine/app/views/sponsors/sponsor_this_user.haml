@@ -1,0 +1,11 @@
+-form_for :sponsore_ad, :url => {:controller => 'sponsore_ads', :action => "create", :id => params[:id]}, :html => {:multipart => true } do |f|
+  .MainForm
+    %label= "Upload Image"
+    = f.file_field :uploaded_data 
+
+    %label= "Description"
+    = f.text_field :description
+
+    %p= submit_tag :create.l
+
+ 

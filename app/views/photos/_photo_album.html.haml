@@ -1,0 +1,15 @@
+%h3= link_to "#{@photo_album.name} - #{:users_photos.l(:user => @user.login)}", user_photo_album_path(@user, @photo_album)
+
+.box.alt
+  - if @is_current_user
+    = link_to 'Add photos', new_user_photo_album_photo_path(@user, @photo_album)
+    |
+    = link_to 'Edit', edit_user_photo_album_path(@user, @photo_album)
+    |
+    = link_to 'Delete', user_photo_album_path(@user, @photo_album), :method => :delete, :confirm => 'Are you sure?'
+    |
+
+  = link_to "Back to #{@user.login}'s photos", user_photos_path
+
+.box
+  = yield

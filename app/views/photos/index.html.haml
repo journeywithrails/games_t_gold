@@ -1,0 +1,18 @@
+.yui-b
+  = render :partial => 'posts/author_profile', :locals => {:user => @user}
+
+#yui-main
+  .yui-b
+    .yui-gd
+      #tag_list.yui-u.box.first
+        %h3=:tags.l
+        %ul.tags        
+        -# @tags.each do |tag|
+          %li
+            - if (tag.name.eql?(params[:tag_name]) )
+              = link_to tag.name, user_photos_path(@user), :class => "selected"
+            - else
+              = link_to tag.name, user_photos_path(:user_id => @user, :tag_name => tag.name)    
+    
+      #photos.yui-u.box
+        = render :partial => 'photos', :layout => (@photo_album.nil? ? 'all' : 'photo_album')

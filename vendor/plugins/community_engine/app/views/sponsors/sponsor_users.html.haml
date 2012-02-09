@@ -1,0 +1,39 @@
+-if current_user.nil? or !current_user.nil?
+  -@section = (params[:metro_area_id] ? 'metro_area' : 'users')
+  .yui-b
+    =# render :partial => 'users/search_options'
+  #yui-main
+    .yui-b
+      .box.user_list
+        %h3=:site_sponsors.l :site => AppConfig.community_name
+
+        
+  
+        %br.clear
+  
+        = render :partial => "users/user", :collection => @users
+      
+        %br.clear
+        
+
+-if !current_user.nil? and !params[:login].nil?
+  -@section = (params[:metro_area_id] ? 'metro_area' : 'users')
+  .yui-b
+    = render :partial => 'users/search_options'
+  #yui-main
+    .yui-b
+      .box.user_list
+        %h3=:site_members.l :site => AppConfig.community_name
+        
+        -cond, @search, @metro_areas, @states = User.paginated_users_conditions_with_search(params) 
+        -@users = User.recent.find(:all,:conditions => cond.to_sql,:include => [:tags],:page => {:current => params[:page], :size => 20})
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+        %br.clear
+
+        = render :partial => "users/user", :collection => @users
+
+        %br.clear
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+ 
+
+

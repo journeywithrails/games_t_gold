@@ -1,0 +1,77 @@
+-if !current_user.nil? and params[:login].nil?
+  -@section = (params[:metro_area_id] ? 'metro_area' : 'users')
+
+  .yui-b
+    = render :partial => 'users/search_options'
+  #yui-main
+    .yui-b
+      .box.user_list
+        %h3=:site_members.l :site => AppConfig.community_name
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1  
+        %br.clear  
+        -@total_users=Friendship.find_all_by_user_id_and_friendship_status_id(current_user.id,2)
+        -@userobj=Array.new
+        -@userobj1=Array.new
+        -@frns_of_my_frns_obj=Array.new
+        -for user in @total_users 
+          -@userobj << User.find(user.friend_id)   
+        %h4= "My Friends" 
+        = render :partial => "users/user", :collection => @userobj  
+        - i=0
+        - for user in @total_users
+          -@total_friend_users=Friendship.find_all_by_user_id_and_friendship_status_id(user.friend_id,2)
+        -for frienduser in @total_friend_users
+          -@userobj1 << frienduser.friend_id unless frienduser.friend_id == current_user.id
+          -i=i+1    
+        - i=0
+        - for user in @userobj1     
+          -@frns_of_my_frns_obj << User.find_by_id(user)
+          -i=i+1    
+
+        -if @frns_of_my_frns_obj.size !=0
+          %hr 
+          %h4= "Friends Of My Friends"           
+          = render :partial => "users/user", :collection =>  @frns_of_my_frns_obj     	    
+
+        %br.clear
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1  
+
+-if current_user.nil?
+  -@section = (params[:metro_area_id] ? 'metro_area' : 'users')
+  .yui-b
+    = render :partial => 'users/search_options'
+  #yui-main
+    .yui-b
+      .box.user_list
+        %h3=:site_members.l :site => AppConfig.community_name
+
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+  
+        %br.clear
+  
+        = render :partial => "users/user", :collection => @users
+      
+        %br.clear
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+
+-if !current_user.nil? and !params[:login].nil?
+  -@section = (params[:metro_area_id] ? 'metro_area' : 'users')
+  .yui-b
+    = render :partial => 'users/search_options'
+  #yui-main
+    .yui-b
+      .box.user_list
+        %h3=:site_members.l :site => AppConfig.community_name
+        
+        -cond, @search, @metro_areas, @states = User.paginated_users_conditions_with_search(params) 
+        -@users = User.recent.find(:all,:conditions => cond.to_sql,:include => [:tags],:page => {:current => params[:page], :size => 20})
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+        %br.clear
+
+        = render :partial => "users/user", :collection => @users
+
+        %br.clear
+        .pagination= paginating_links @users, :params => params if @users.page_count > 1
+ 
+
+

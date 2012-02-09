@@ -1,0 +1,14 @@
+%h3= link_to :users_photos.l(:user=>@user.login), user_photos_path(@user)
+
+- if @is_current_user
+  .box.right
+    = link_to :new_photo.l, new_user_photo_path(@user)
+    |
+    = link_to 'New photo album', new_user_photo_album_path(@user)
+
+  .clear
+
+- for photo_album in @photo_albums do
+  = link_to photo_album_icon(photo_album), user_photo_album_photos_path(@user, photo_album)
+
+= yield

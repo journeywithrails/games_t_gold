@@ -1,0 +1,25 @@
+- @section = 'tournaments'
+#yui-main
+  .yui-b.box
+    %h3
+      Match #
+      = @match.position
+
+    - form_for [:update_winner, @user, @tournament, @match], :html => { :method => :put, :class => 'MainForm' } do |f|
+      %label Date and Time Played
+      = f.datetime_select :played_at, :order => [ :month, :day, :year ]
+
+      - @players.each_with_index do |player, index|
+        - fields_for :players, player, :index => player.id do |ff|
+          %label
+            %h2= "Player #{index + 1}: #{player_name(player)} Score"
+          = ff.text_field :score, :size => 5
+
+          = f.radio_button :winner_id, player.id
+          %strong Declare Winner
+
+      %p= submit_tag 'Save', :or => link_to(:cancel.l, tournament_match_path(@tournament, @match))
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to tournament', tournament_path(@tournament)

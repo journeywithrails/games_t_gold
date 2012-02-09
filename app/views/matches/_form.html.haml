@@ -1,0 +1,15 @@
+%h4
+  Match #
+  = @position
+
+- (1..2).each do |index|
+  - id = !@match.players[index-1].nil? && @match.players[index-1].id || index
+  - fields_for :players, @match.players[index-1], :index => id do |ff|
+    %label= "Player #{index}"
+    = ff.text_field :name
+    %div{ :id => "players_#{id}_name_auto_complete", :class => 'auto_complete' }
+    :javascript
+      var players_#{id}_name_auto_completer = new Ajax.Autocompleter('players_#{id}_name', 'players_#{id}_name_auto_complete', '/matches/auto_complete_for_player_name', { method: 'get' })
+
+%label Schedule
+= form.datetime_select :schedule, :order => [ :month, :day, :year ]

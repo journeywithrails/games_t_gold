@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Google maps example</title>
+    <!-- This includes the google maps API code. 
+          You need to put your own key here -->
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA"
+            type="text/javascript"></script>
+    <script type="text/javascript">
+    function initialize() {
+      if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map_canvas"));
+        map.setCenter(new GLatLng(47.620973, -122.347276), 13);
+        GEvent.addListener(map, "click", function() {
+          var center = map.getCenter();
+          document.getElementById("message").innerHTML = center.toString();
+        });
+
+map.addControl(new GSmallMapControl());
+map.addControl(new GMapTypeControl());
+<%#*map.addControl(new GScaleControl( ));%>
+      }
+    }  
+    </script>
+    
+  </head>
+  <body onLoad="initialize()" onUnload="GUnload()">
+  
+   <div style="width:980px; overflow:hidden;">
+  
+    <div id="map_canvas" style="float:left; width: 640px; height: 500px; ">
+	</div>
+
+	
+<% @section = (params[:metro_area_id] ? 'metro_area' : 'users') %>
+<div style="float:right; width:320px; margin:0px; padding:0px; ">
+<%= render :partial => 'users/search_options'  %>
+</div>
+</div>
+  </body>
+</html>
+
+

@@ -1,0 +1,70 @@
+- @meta = { :description => "#{@tournament.name.capitalize} - Match \# #{@match.position}.", :robots => AppConfig.robots_meta_show_content }
+- @section = 'tournaments'
+- @page_title = "#{@tournament.name} - Match \# #{@match.position}"
+
+#yui-main
+  .yui-b
+    .box
+      %h3
+        = @tournament.name
+        \- Match #
+        = @match.position
+
+      .box.centered
+        %h2= player_name(@players[0])
+
+        %p
+          %strong versus
+
+        %h2= player_name(@players[1])
+
+        - if @match.played?
+          - if @match.winner
+            %h4
+              Winner:
+              = player_name(@match.winner)
+
+            %p
+              %strong Score:
+              = scoreline(@players)
+
+          - else
+            %h4 Match Forfeited
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Match Info
+
+    %dl
+      %dt Schedule 
+      %dd
+        - if @match.schedule.nil?
+          Not yet scheduled
+          
+        - else
+          = @match.schedule.to_formatted_s(:long)
+          - unless @match.played?
+            = play_time_left @match
+
+      %dt Date Played
+      %dd= @match.played? ? @match.played_at.to_formatted_s(:long) : 'Not yet played' 
+
+      - unless @tournament.venue.blank?
+        %dt Venue
+        %dd= @tournament.venue 
+
+  - if logged_in? && @tournament.admin?(current_user) && !@match.played?
+    .box.alt
+      %h3 Tournament Admin Controls
+      - if @match.expired? || !@match.scheduled?
+        %div= link_to 'Forfeit match', forfeit_user_tournament_match_path(current_user, @tournament, @match), :method => :put
+
+      - if !@match.expired? || !@match.scheduled?
+        %div= link_to 'Declare match winner', edit_winner_user_tournament_match_path(current_user, @tournament, @match)
+
+      %div= link_to 'Edit match details', edit_user_tournament_match_path(current_user, @tournament, @match)
+      - if @match.winner.nil?
+        %div= link_to 'Delete this match', user_tournament_match_path(current_user, @tournament, @match), :method => :delete, :confirm => 'Are you sure you want to delete this match?'
+
+  .box
+    = link_to 'Back to tournament', tournament_path(@tournament)

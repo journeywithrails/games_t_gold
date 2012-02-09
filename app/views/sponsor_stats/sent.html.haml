@@ -1,0 +1,65 @@
+
+-unless logged_in?
+  =render :partial => 'base/homepage_banner_message'
+
+#yui-main
+  .yui-b
+    #friends.box
+      %h3
+        = "#{@sponsor_ads.size} User Request(s) Sent"
+      .yui-gf.row
+        -for sponsor in @sponsor_ads
+          .user_list
+            .yui-gf.row
+              .yui-u.first.centered= image_tag(sponsor.public_filename(:small), :size => "100x100", :class => "polaroid" )
+              .yui-g
+                .yui-u.first
+                  %h2= link_to User.find(sponsor.user_id).login, user_path(sponsor.user_id)
+                  = "from #{User.find(sponsor.user_id).location}<br/>" if User.find(sponsor.user_id).metro_area 
+                  
+                  -if sponsor.accept==1
+                    = :accepted.l 
+                  -elsif sponsor.accept==0
+                    = :denied.l  
+                  -else
+                    Not Yet Approved
+                  \: 
+                  =:requested.l
+                  = time_ago_in_words sponsor.created_at 
+
+
+  .yui-b
+    #friends.box
+      %h3
+        = "#{@sponsor_teams.size} Team Request(s) Sent" 
+      .yui-gf.row
+        -for sponsor in @sponsor_teams
+          .user_list
+            .yui-gf.row
+              .yui-u.first.centered= image_tag(sponsor.public_filename(:small), :size => "100x100", :class => "polaroid" )
+              .yui-g
+                .yui-u.first
+                  %h2= link_to Team.find(sponsor.team_id).name, team_path(sponsor.team_id)
+                  -if sponsor.accept==1
+                    = :accepted.l 
+                  -elsif sponsor.accept==0
+                    = :denied.l 
+                  -else
+                    Not Yet Approved
+                  \: 
+                  =:requested.l
+                  = time_ago_in_words sponsor.created_at    
+        
+
+.yui-b
+  .box
+    %h3= "Stats" 
+    %ul.list.checks    
+      %li= link_to "Requests Sent", sent_url, {:class => 'popular'}
+      %li= link_to "Requests Accepted", accepted_url, {:class => 'popular'}
+      %li= link_to "Requests Denied", denied_url, {:class => 'popular'}
+      %li= link_to "Statistics", stats_url, {:class => 'popular'}
+     
+
+  
+ 

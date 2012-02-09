@@ -1,0 +1,300 @@
+- @meta = { :description => "#{@team.name.capitalize}.", :keywords => "#{@team.tags.join(', ') if @team.tags}", :robots => AppConfig.robots_meta_show_content}
+- @section = 'teams'
+- @page_title = @team.name
+
+#yui-main
+  .yui-b.box
+    %h3= @team.name
+
+    = team_origin @team
+
+    .yui-g
+      .yui-u.first
+        = team_logo(@team, :medium)
+      .yui-u
+        - unless @team.description.blank?
+          %p= sanitize(@team.description_html)
+
+    %h3 Members
+    - if @memberships.any? 
+      %ul.flat
+        -count=0
+        -if !logged_in?
+          - for membership in @memberships do
+            - member = membership.member
+            -count = count+1
+            -if count <= 5
+              %li.hentry
+                .yui-gb
+                  .yui-u.first.centered
+                    = link_to image_tag(member.avatar_photo_url(:thumb), :class => 'polaroid'), user_path(member)
+
+                  .yui-u
+                    %h2= link_to member.display_name, user_path(member)
+                    = team_position @team, member
+                    %br
+                    = membership_history membership
+
+                  .yui-u
+                    - if logged_in? && @team.member?(current_user) && member != current_user
+                      = link_to 'Send message', new_user_message_path(current_user, :message => { :to => member })
+
+                    - if @team.admin? current_user
+                      - unless @team.creator?(member)
+                        %br
+                        - if @team.admin?(member)
+                          = link_to 'Demote to member', demote_team_membership_path(@team, membership), :method => :put
+                        - else
+                          = link_to 'Promote to admin', promote_team_membership_path(@team, membership), :method => :put
+
+                        %br
+                        - if member == current_user
+                          = link_to 'Leave this team', terminate_team_membership_path(@team, membership)
+                        - else
+                          = link_to 'Dismiss from team', revoke_team_membership_path(@team, membership)
+
+                        %br
+                        -@topmembers=@team.top_members.split(',') if !@team.top_members.nil?
+                        -if @team.top_members.nil?
+                          = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                   
+                        -elsif @team.top_members.split(',').include?(member.id.to_s)
+                          = link_to 'Deselect from top 5 members', :controller => 'teams', :action => 'deselect_from_top_members', :id => params[:id], :tid => member.id
+                        -elsif !@team.top_members.include?(member.id)
+                          = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                                  
+              %div{:id => "see_details#{count}"}
+                %a{:href => "#", :style => 'text-decoration:none; padding-left: 225px;', :onclick => "document.getElementById('see_details#{count}').style.display='none'; document.getElementById('viewmore').style.display='block';"}= "View More Members >>" if count >= 5
+          %div{:id => "viewmore", :style => 'display:none; padding-top: 10px;'}   
+            %a{:href => "#", :style => 'text-decoration:none; padding-left: 225px; padding-bottom: 50px;', :onclick => "document.getElementById('viewmore').style.display='none'; document.getElementById('see_details#{count-1}').style.display='block';"}= "Hide Members <<"     
+            - count1=0
+            - for membership in @memberships do 
+              - member = membership.member
+              -count1 = count1+1 
+              -if count1 > 5         
+                %li.hentry
+                  .yui-gb
+                    .yui-u.first.centered
+                      = link_to image_tag(member.avatar_photo_url(:thumb), :class => 'polaroid'), user_path(member)
+
+                    .yui-u
+                      %h2= link_to member.display_name, user_path(member)
+                      = team_position @team, member
+                      %br
+                      = membership_history membership
+
+                    .yui-u
+                      - if logged_in? && @team.member?(current_user) && member != current_user
+                        = link_to 'Send message', new_user_message_path(current_user, :message => { :to => member })
+
+                      - if @team.admin? current_user
+                        - unless @team.creator?(member)
+                          %br
+                          - if @team.admin?(member)
+                            = link_to 'Demote to member', demote_team_membership_path(@team, membership), :method => :put
+                          - else
+                            = link_to 'Promote to admin', promote_team_membership_path(@team, membership), :method => :put
+
+                          %br
+                          - if member == current_user
+                            = link_to 'Leave this team', terminate_team_membership_path(@team, membership)
+                          - else
+                            = link_to 'Dismiss from team', revoke_team_membership_path(@team, membership)
+
+                          %br
+                          -@topmembers=@team.top_members.split(',') if !@team.top_members.nil?
+                          -if @team.top_members.nil?
+                            = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                   
+                          -elsif @team.top_members.split(',').include?(member.id.to_s)
+                            = link_to 'Deselect from top 5 members', :controller => 'teams', :action => 'deselect_from_top_members', :id => params[:id], :tid => member.id
+                          -elsif !@team.top_members.include?(member.id)
+                            = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                   
+        -else
+          - for membership in @memberships do
+            - member = membership.member
+            %li.hentry
+              .yui-gb
+                .yui-u.first.centered
+                  = link_to image_tag(member.avatar_photo_url(:thumb), :class => 'polaroid'), user_path(member)
+
+                .yui-u
+                  %h2= link_to member.display_name, user_path(member)
+                  = team_position @team, member
+                  %br
+                  = membership_history membership
+
+                .yui-u
+                  - if logged_in? && @team.member?(current_user) && member != current_user
+                    = link_to 'Send message', new_user_message_path(current_user, :message => { :to => member })
+
+                  - if @team.admin? current_user
+                    - unless @team.creator?(member)
+                      %br
+                      - if @team.admin?(member)
+                        = link_to 'Demote to member', demote_team_membership_path(@team, membership), :method => :put
+                      - else
+                        = link_to 'Promote to admin', promote_team_membership_path(@team, membership), :method => :put
+
+                      %br
+                      - if member == current_user
+                        = link_to 'Leave this team', terminate_team_membership_path(@team, membership)
+                      - else
+                        = link_to 'Dismiss from team', revoke_team_membership_path(@team, membership)
+
+                      %br
+                      -@topmembers=@team.top_members.split(',') if !@team.top_members.nil?
+                      -if @team.top_members.nil?
+                        = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                   
+                      -elsif @team.top_members.split(',').include?(member.id.to_s)
+                        = link_to 'Deselect from top 5 members', :controller => 'teams', :action => 'deselect_from_top_members', :id => params[:id], :tid => member.id
+                      -elsif !@team.top_members.include?(member.id)
+                        = link_to 'Set as one of top 5 members', :controller => 'teams', :action => 'set_as_top_member', :id => params[:id], :tid => member.id                   
+    - else
+      %p= No members!
+
+    %h3 Ladders
+    -@match_players=MatchPlayer.find(:all, :conditions => [ "player_id like ?",@team.id])
+    -for m in @match_players
+      - @tournament=Tournament.find(Match.find(m.match_id).tournament_id)
+
+    %li.hentry
+      .yui-gb
+        -if !@tournament.nil?
+          .yui-u.first.centered
+            -if !@tournament.filename.nil?
+              = link_to image_tag(@tournament.public_filename, :size => "125x125"), tournament_path(@tournament)    
+            -else
+              = link_to tournament_logo(@tournament), tournament_path(@tournament) 
+
+          .yui-u
+            %h2= link_to h(@tournament.name), tournament_path(@tournament)
+            %p= @tournament.schedule
+            %p= truncate @tournament.description, 60
+            %br
+            -@id=@tournament.id
+            %a{:href => "/ladders/#{@id}", :style => 'text-decoration:none'}= "View More Details >>"   
+        -else
+          No ladders
+
+    - if logged_in? && @team.admin?(current_user)
+      %h3 Membership Requests
+      - if @membership_requests.any?
+        %ul.flat
+        - for membership_request in @membership_requests do
+          - requester = membership_request.user
+          %li.hentry
+            .yui-gb
+              .yui-u.first.centered
+                = link_to image_tag(requester.avatar_photo_url(:thumb), :class => 'polaroid'), user_path(requester)
+
+              .yui-u
+                %h2= link_to requester.display_name, user_path(requester)
+                %p= "Request sent #{time_ago_in_words(membership_request.created_at)}"
+                %p= sanitize membership_request.message
+
+              .yui-u
+                = link_to 'Accept', accept_team_request_path(@team, membership_request), :method => :post
+                %br
+                = link_to 'Reject', team_request_path(@team, membership_request, :reject => '1'), :method => :delete, :confirm => 'Are you sure?'
+                %br
+                = link_to 'Send message', new_user_message_path(current_user, :message => { :to => requester })
+
+      - else
+        No membership requests.
+        = link_to 'Invite people to join your team!', new_team_invitation_path(@team)
+
+      
+      %h3 Sponsors Requests
+     
+      -if @sponsors.any?
+       
+        -for sponsor in @sponsors         
+          = image_tag(SponsorTeam.find(:first,sponsor.sponsor_id).public_filename(:thumb))
+          = User.find(sponsor.sponsor_id).login.capitalize
+
+          &nbsp;&nbsp;
+          = link_to ('Show This Sponsor', {:controller => 'users', :action => 'show', :id => sponsor.sponsor_id},{:target => "_blank"})
+          -if sponsor.accept.nil?
+            &nbsp;&nbsp;
+            = link_to ('Accept', :controller => 'sponsor_teams', :action => 'change_status', :id => params[:id], :sid => sponsor.sponsor_id, :status => 1)
+            &nbsp;&nbsp;
+            = link_to ('Reject', :controller => 'sponsor_teams', :action => 'change_status', :id => params[:id], :sid => sponsor.sponsor_id, :status => 0)
+      -else
+        No Sponsor Requests
+      
+
+      %h3 Invitations
+      - if @membership_invitations.any?
+        %ul.flat
+        - for membership_invitation in @membership_invitations do
+          - invitee = membership_invitation.user
+          %li.hentry
+            .yui-gb
+              .yui-u.first.centered
+                = link_to image_tag(invitee.avatar_photo_url(:thumb), :class => 'polaroid'), user_path(invitee)
+
+              .yui-u
+                %h2= link_to invitee.display_name, user_path(invitee)
+                %p= "Invitation sent #{time_ago_in_words(membership_invitation.created_at)}"
+                %p= sanitize membership_invitation.message
+
+              .yui-u
+                = link_to 'Cancel invitation', team_invitation_path(@team, membership_invitation), :method => :delete, :confirm => 'Are you sure?'
+                %br
+                = link_to 'Send message', new_user_message_path(current_user, :message => { :to => invitee })
+
+      - else
+        No membership invitations.
+        = link_to 'Invite people to join your team!', new_team_invitation_path(@team)
+
+    - if !logged_in? || !@team.member?(current_user)
+      #comments.box.hfeed.comments
+        %h3=:profile_comments.l
+        %h2=:add_your_comment.l
+        %p= render :partial => 'comments/comment_form', :locals => { :commentable => @team }
+        %a#newest_comment
+        = render :partial => 'comments/comment', :collection => @team_comments
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Logo
+    .box.centered= team_logo(@team)
+
+  - if @team.admin? current_user
+    .box.alt
+      %h3 Team Admin Controls 
+      %p
+        = link_to '&raquo; Edit team profile', edit_team_path(@team)
+        %br
+        = link_to '&raquo; Invite people to join', new_team_invitation_path(@team)
+        %br
+        = link_to '&raquo; Dissolve this team', dissolve_team_path(@team)
+        %br
+
+  .box.alt
+    - if @team.member? current_user
+      - unless @team.creator? current_user
+        = link_to 'Leave this team', terminate_team_membership_path(@team, current_user)
+        %br
+      
+    - else
+      - if logged_in? && (mr = current_user.membership_requests.to_team(@team))
+        = link_to 'Cancel membership request', team_request_path(@team, mr), :method => :delete, :confirm => 'Are you sure?'
+      - else
+        = link_to 'Request to become a member', new_team_request_path(@team)
+      %br
+    = link_to 'Create a new team', new_team_path
+
+
+.ads_div
+  -3.times do
+    .box.centered      
+      -@sponsor_teams=SponsorTeam.find(:all, :conditions => ["team_id LIKE ?", @team.id]) 
+      -if !current_user.nil?
+        -if !@sponsor_teams.size.nil?
+          -for sponsor_team in @sponsor_teams
+            = link_to (image_tag(sponsor_team.public_filename(:small)), "http://www.gamdo.com")
+            -SponsorTeamStats.create(:sponsor_team_id => "#{sponsor_team.team_id}", :view_type => "impression", :ip => "#{request.remote_ip}")
+        -else
+          = link_to (image_tag('/images/sponsor_this_team.gif'), :controller => 'sponsors', :action => 'sponsor_this_team', :id => @team.id)
+      -else
+        = link_to (image_tag('/images/ai.php.gif'), :controller => 'sponsors', :action => 'sponsor_this_team', :id => @team.id)
+     

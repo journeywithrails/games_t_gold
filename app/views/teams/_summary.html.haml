@@ -1,0 +1,24 @@
+- team = summary
+%li.hentry
+  .yui-gd
+    .yui-u.first.centered
+      = link_to team_logo(team), team_path(team)
+
+    .yui-u.yui-g
+      .yui-u.first
+        %h2= link_to h(team.name), team_path(team)
+        = team_origin team
+        %p= truncate(team.description, 60)
+
+      .yui-u
+        - if logged_in?
+          - if team.admin? current_user
+            = link_to 'Edit team profile', edit_team_path(team)
+          - elsif !team.member? current_user
+            - if (mr = current_user.membership_requests.to_team(team))
+              = link_to 'Cancel membership request', team_request_path(team, mr), :method => :delete, :confirm => 'Are you sure?'
+            - elsif (mi = current_user.membership_invitations.from_team(team))
+              = link_to 'View invitation', team_invitation_path(team, mi)
+   
+          - else
+            = link_to 'Request to be a member', new_team_request_path(team)

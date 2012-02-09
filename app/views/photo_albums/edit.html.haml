@@ -1,0 +1,40 @@
+.yui-b
+  .box
+    %h3 Help
+    %p 
+      =:photo_tip_1.l
+    %p 
+      =:photo_tip_2.l
+
+    = link_to 'Show this photo album', user_photo_album_photos_path(@user, @photo_album)
+    |
+    = link_to :back_to_my_photos.l, user_photos_path(@user)
+
+  .box.alt= link_to 'Delete this photo album', user_photo_album_photos_path(@user, @photo_album), :method => :delete
+
+#yui-main
+  .yui-b.box
+    %h3 Editing Photo Album
+
+    = error_messages_for :photo_album
+
+    - form_for(:photo_album, :url => user_photo_album_path(@user, @photo_album), :html => { :method => :put, :class => "MainForm" } ) do |f|
+      %label 
+        =:name.l + ":"
+      = f.text_field :name, :size => 35
+
+      %label
+        =:description.l + ":"
+      = f.text_area :description, :size => "58x5"
+
+      %label 
+        =:tags.l + ":"
+      = text_field_tag 'tag_list', @photo_album.tag_list, {:autocomplete => "off", :size => 35}
+
+      #tag_list_auto_complete.auto_complete
+      = auto_complete_field 'tag_list', {:url => { :controller => "tags", :action => 'auto_complete_for_tag_name'}, :tokens => [',', ' ']  }
+
+      %p
+        = submit_tag :update.l
+        = :or.l
+        = link_to :cancel_and_go_back_to_my_photos.l, user_photo_album_photo_path(@user, @photo_album)

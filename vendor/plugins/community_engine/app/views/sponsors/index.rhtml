@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <title>Google maps example</title>
+    <!-- This includes the google maps API code. 
+          You need to put your own key here -->
+    <!-- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA" -->
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAhqZqWZnTImVojO3dd3ZzSRTAOjO106dFk48PaDeMSQ5mqze4TRT84tGTkyy7-lbtprcpkEDxeRuBCw"
+            type="text/javascript"></script>
+    <script type="text/javascript">
+
+   var geocoder;
+   var map;
+   
+   var address = "United States";
+
+  function initialize() 
+  {
+      if (GBrowserIsCompatible()) 
+      {
+        map = new GMap2(document.getElementById("map_canvas"));
+    <% params[:country_id].blank? ?  @size= 13 : @size=3 %>
+        <%if(params[:country_id].blank? && params[:state_id].blank? && params[:metro_area_id].blank?)%>
+          map.setCenter(new GLatLng( <%= @lat %> , <%= @long %> ), 2);
+        <% else %>
+          map.setCenter(new GLatLng( <%= @lat %> , <%= @long %> ), <%= @size %>);
+        <% end %>
+        GEvent.addListener(map, "click", function() {
+          var center = map.getCenter();         
+        });         
+                 
+      // default icon
+      function createMarker(point, text, title) 
+      {
+          var marker =
+          new GMarker(point,{title:title});
+          GEvent.addListener(
+          marker, "mouseover", function() {
+          marker.openInfoWindowHtml(text);
+          });
+          return marker;
+       }       
+
+       map.addControl(new GLargeMapControl());
+       map.addControl(new GMapTypeControl());           
+
+         // Create new geocoding object
+        geocoder = new GClientGeocoder();
+
+        // Retrieve location information, pass it to addToMap()
+        <% for sponsor in @sponsors %>  
+        <% if(!params[:country_id].nil?) %>                 
+             <% @location = @gg.locate sponsor.cname+", "+sponsor.sname+", "+sponsor.area %>
+             var point = new GLatLng(<%= @location.latitude %>,<%= @location.longitude %>);   
+             var marker = createMarker(point, 'Total No. Of Sponsors: <%= sponsor.count %><br /><br /><a href="http://www.gamdo.com/sponsors/sponsor_users?country_id=<%= sponsor.cid %>&state_id=<%= sponsor.sid %>&metro_area_id=<%= sponsor.aid %>" target="_blank">Show Sponsors</a>', 'Title')     
+             map.addOverlay(marker);		
+        <% else %>            
+             <% @location = @gg.locate sponsor.cname %>
+             var point = new GLatLng(<%= @location.latitude %>,<%= @location.longitude %>);   
+             var marker = createMarker(point)     
+             map.addOverlay(marker);		
+        <% end %>
+        <% end %>       
+      }	
+    }
+
+   function addToMap(response)   {
+      
+      // Retrieve the object
+      place = response.Placemark[0];
+
+      // Retrieve the latitude and longitude
+      point = new GLatLng(place.Point.coordinates[1],
+                          place.Point.coordinates[0]);
+
+      // Center the map on this point     
+  
+      map.setCenter(point, <%= @size %>);      
+
+      // Create a marker
+      marker = new GMarker(point); 
+
+      text = "<a href='http://localhost:3000/users?country_id=<%= params[:country_id] %>'>Show Sponsors</a>"
+      GEvent.addListener(
+          marker, "mouseover", function() {
+            marker.openInfoWindowHtml(text);
+          });
+         
+     
+      // Add the marker to map
+      map.addOverlay(marker);
+
+      marker.openInfoWindowHtml(place.address);
+      // Add address information to marker
+      
+   }
+   </script>
+    
+  </head>
+  <body onLoad="initialize()" onUnload="GUnload()">
+  
+   <div style="width:980px; overflow:hidden;">
+  
+    <div id="map_canvas" style="float:left; width: 640px; height: 500px;">      
+    </div>
+
+	
+<% @section = (params[:metro_area_id] ? 'metro_area' : 'users') %>
+<div style="float:right; width:320px; margin:0px; padding:0px; ">
+<%= render :partial => 'search_options'  %>
+</div>
+</div>
+  </body>
+</html>
+
+

@@ -1,0 +1,160 @@
+/* Disable user popup-menu */
+#user-menu, #user-menu:hover {
+  background: transparent;
+  padding-right: 0;
+}
+
+#user-menu-options {
+  text-align: right;
+}
+
+#user-menu-options ul {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+}
+
+#user-menu-options li {
+  display: inline;
+  padding: 0 5px;
+}
+
+/* Signup styles */
+.big-link {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.big-link a {
+  font-weight: bold;
+  font-size: 116%;
+  font-variant: small-caps;
+  text-decoration: none;
+}
+
+.big-link img {
+  vertical-align: bottom;
+}
+
+#player {
+  border: 1px solid #39f;
+  background-color: #9cf;
+}
+
+#sponsor {
+  border: 1px solid #3c6;
+  background-color: #9f6;
+}
+
+/* Photos */
+#photos img.photo-album {
+  border: 2px solid #a2a19b;
+  margin: 0 12px 15px 0;
+  padding: 3px;
+}
+
+h3.team {
+  margin: 0;
+}
+
+h4 {
+  font-weight: bold;
+  font-size: 116%;
+  margin-top: 10px;
+}
+
+.wide {
+  width: 100%;
+}
+
+tr.rot td {
+  background-color: #eee;
+}
+
+/* Ladders */
+.tournament-name {
+  padding: 5px 15px;
+}
+
+.player-name img {
+  padding: 5px 3px 5px 0;
+}
+
+.player-name a {
+  text-decoration: none;
+}
+
+.tournament-name img, .player-name img {
+  vertical-align: middle;
+}
+
+table.ladder {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+table.ladder td {
+  padding: 1px;
+}
+
+table.ladder td.line {
+  background-color: #000;
+}
+
+table.ladder td.vertical-line {
+  width: 1px;
+}
+
+table.ladder td.force-1px-height {
+  height: 1px;
+}
+
+table.ladder .match {
+  text-align: center;
+  padding: 5px;
+}
+
+dl {
+  padding: 0 10px;
+}
+
+dt {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+#hd h2 .logout-link {
+  font-size: 85%;
+}
+
+.silver {
+  background-color: #fff;
+  padding: 0 10px;
+}
+
+.silver li {
+  padding: 3px 0;
+}
+
+.tag-list {
+  margin-left: 10px;
+}
+
+.tag-list li {
+  margin-bottom: 5px;
+}
+
+.tag-list .most {
+  font-size: 146.5%;
+}
+
+.tag-list .many {
+  font-size: 131%;
+}
+
+.tag-list .some {
+  font-size: 116%;
+}

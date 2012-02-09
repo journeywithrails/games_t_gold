@@ -1,0 +1,15 @@
+#yui-main
+  .yui-b.box
+    %h3 Edit Team Profile
+
+    = error_messages_for :team
+
+    - form_for @team, :html => { :multipart => true, :class => 'MainForm' } do |f|
+      = render :partial => 'form', :object => f
+      %p= submit_tag 'Update Team Profile', :or => link_to(:cancel.l, team_path(@team))
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Logo
+    .box.centered
+      = team_logo(@team, :thumb)

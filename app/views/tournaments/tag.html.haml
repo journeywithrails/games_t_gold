@@ -1,0 +1,65 @@
+- @meta = { :description => "#{AppConfig.community_name} tournaments.", :keywords => "#{AppConfig.meta_keywords}", :robots => AppConfig.robots_meta_list_content}
+- @section = 'tournaments'
+
+#yui-main
+  .yui-b
+    .box
+      %h3
+        - if @all
+          Tournaments
+
+        - else
+          == Tournaments Tagged With &ldquo;#{@tag}&rdquo;
+
+      - if @tournaments.any?
+        %ul.flat
+        - for tournament in @tournaments do
+          %li.hentry
+            .yui-gb
+              .yui-u.first.centered
+                -if !tournament.filename.nil?
+                  = link_to image_tag(tournament.public_filename, :size => "125x125"), tournament_path(tournament)    
+                -else
+                  = link_to tournament_logo(tournament), tournament_path(tournament)              
+              .yui-u
+                %h2= link_to h(tournament.name), tournament_path(tournament)
+                %p= tournament.schedule
+                %p= truncate tournament.description, 60
+                %br
+                -@id=tournament.id
+                %a{:href => "/ladders/#{@id}", :style => 'text-decoration:none'}= "View More Details >>"
+
+              .yui-u
+                - if logged_in? && tournament.admin?(current_user)
+                  = link_to 'Edit tournament details', edit_user_tournament_path(@user, tournament)
+
+      - else
+        No tournaments found.
+        = link_to 'Be the first to create a tournament!', new_user_tournament_path(@user)
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Back to tournament categories', tournaments_path
+    %br
+    = link_to 'Create a new tournament', new_user_tournament_path(@user)
+
+.ads_div
+  -3.times do
+    .box.centered
+      :plain
+        <script type='text/javascript'><!--//<![CDATA[
+          var m3_u = (location.protocol=='https:'?'https://ads.gamdo.com/www/delivery/ajs.php':'http://ads.gamdo.com/www/delivery/ajs.php');
+          var m3_r = Math.floor(Math.random()*99999999999);
+          if (!document.MAX_used) document.MAX_used = ',';
+          document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);
+          document.write ("?zoneid=3&amp;target=_blank");
+          document.write ('&amp;cb=' + m3_r);
+          if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);
+          document.write (document.charset ? '&amp;charset='+document.charset : (document.characterSet ? '&amp;charset='+document.characterSet : ''));
+          document.write ("&amp;loc=" + escape(window.location));
+          if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));
+          if (document.context) document.write ("&context=" + escape(document.context));
+          if (document.mmm_fo) document.write ("&amp;mmm_fo=1");
+          document.write ("'><\/scr"+"ipt>");
+        //]]>--></script>
+

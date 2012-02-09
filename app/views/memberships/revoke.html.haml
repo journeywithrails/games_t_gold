@@ -1,0 +1,23 @@
+#yui-main
+  .yui-b.box
+    %h3= @team.name
+
+    .yui-gf
+      .yui-u.first.centered
+        = image_tag @member.avatar_photo_url(:thumb), :class => 'polaroid'
+
+      .yui-u
+        %h2= link_to @member.display_name, user_path(@member)
+
+        = team_position @team, @member
+        %br
+        = membership_history @member
+
+    .box.alt.first_alt
+      %h3= "Are you sure you want to dismiss #{@member.display_name} from the team?"
+      %p= link_to 'Yes. Adios!', team_membership_path(@team, @membership), :method => :delete
+      = link_to 'I changed my mind.', team_path(@team)
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to team profile', team_path(@team)

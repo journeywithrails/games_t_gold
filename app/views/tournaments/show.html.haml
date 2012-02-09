@@ -1,0 +1,65 @@
+- @meta = { :description => "#{@tournament.name.capitalize}.", :robots => AppConfig.robots_meta_show_content }
+- @section = 'tournaments'
+- @page_title = @tournament.name
+
+#yui-main
+  .yui-b
+    .box
+      %h3.tournament-name
+        =# image_tag @tournament.creator.avatar_tournament_url(:thumb), :alt => @tournament.creator.login, :size => '50x50'
+        = image_tag @tournament.public_filename, :size => '50x50' if !@tournament.filename.nil?
+        == #{@tournament.name} Ladder
+
+      - if @tournament.number_of_players <= 8
+        = render :partial => 'teams_8'
+
+      - else
+        = render :partial => 'teams_16'
+
+      - unless @tournament.description.blank? || @tournament.rules.blank? || @tournament.equipment.blank?
+        %h3 About This Tournament
+        = textilize @tournament.description
+        - unless @tournament.rules.blank?
+          %h4 Rules
+          = textilize @tournament.rules
+        - unless @tournament.equipment.blank?
+          %h4 Required/Recommended Equipment
+          = textilize @tournament.equipment
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Event Info
+
+    %dl
+      %dt Competition Name
+      %dd= @tournament.name
+
+      %dt Number of Players
+      %dd= @tournament.number_of_players
+
+      %dt Schedule
+      %dd= @tournament.schedule
+
+      - unless @tournament.venue.blank?
+        %dt Venue
+        %dd= @tournament.venue 
+
+      %dt Contact Person
+      %dd= link_to @tournament.creator.login, @tournament.creator
+
+      - if @tournament.signup_date
+        %dt Signup By
+        %dd= @tournament.signup_date.to_formatted_s(:long)
+
+      - if @tournament.tags
+        %dt Tags
+        %dd= @tournament.tags.join(', ')
+
+  - if logged_in? && @tournament.admin?(current_user)
+    .box.alt
+      %h3 Tournament Admin Controls
+
+      = link_to 'Edit tournament details', edit_user_tournament_path(@user, @tournament)
+
+  .box
+    = link_to 'Back to tournaments list', tournaments_path

@@ -1,0 +1,14 @@
+- @section = 'tournaments'
+#yui-main
+  .yui-b.box
+    %h3 New Tournament
+
+    = error_messages_for :tournament
+
+    - form_for [@user, @tournament], :html => {:multipart => true } do |f|
+      = render :partial => 'form', :object => f
+      %p= submit_tag :create.l, :or => link_to(:cancel.l, tournaments_path)
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to tournaments', tournaments_path

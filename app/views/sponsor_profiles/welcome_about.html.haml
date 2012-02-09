@@ -1,0 +1,26 @@
+.yui-b
+  .box.alt.first_alt
+    %h3
+      =:get_started_tell_us_about_yourself.l
+    = render :partial => 'shared/bio_help'
+    %p
+      =:remember_you_can_always_change_this_later.l
+    %p
+      = link_to "&raquo; " + :skip_this_and_go_to_your_profile.l, user_path(@user)
+
+  - if @user.avatar_photo_url
+    .box.alt
+      %h3=:your_profile_photo.l
+      .centered
+        = @user.vendor ? "<div class='right_corner'><div class='community_pro'></div></div>" : ''
+        = image_tag( @user.avatar_photo_url(:medium), :class => "polaroid", :style=>"width:250px" )
+
+#yui-main
+  .yui-b.box
+    - form_tag user_path(:welcome => 'complete', :from => 'about'), :method => 'put', :multipart =>true, :class => "MainForm" do
+      = error_messages_for :user, :profile
+
+      %h3=:name.l
+      = text_field :profile, :name
+
+      %p= submit_tag 'Save, then go to your profile'

@@ -1,0 +1,34 @@
+- @meta = { :description => "#{AppConfig.community_name} tournaments.", :keywords => "#{AppConfig.meta_keywords}", :robots => AppConfig.robots_meta_list_content}
+- @section = 'tournaments'
+
+#yui-main
+  .yui-b
+    .box
+      %h4=# link_to 'Create New Sport/Category', :controller => 'test', :action => 'test'
+    .box
+      %h3 Tournament Categories	   
+      - if @tags.any?
+        %ul.tag-list
+          - tag_cloud @tags, %w(few some  many most) do |tag, css_class|
+            %li{ :class => css_class }
+              = link_to tag, tag_tournament_path(tag)
+
+      - else
+        No categories/tags found.
+        = link_to 'Be the first to create a tournament!', new_user_tournament_path(@user)
+
+.yui-b
+  .box.alt.first_alt
+    %h3
+      TOURNAMENTS
+    = link_to 'List all tournaments', tournaments_path(:all => '1')
+    %br
+    = link_to 'Create a new tournament', new_user_tournament_path(@user)
+
+.yui-b
+  .box.alt.first_alt
+    %h3
+      EVENTS
+    = link_to 'List all Events', events_path
+    %br
+    = link_to 'Create a new event', :controller => 'events', :action => 'new'

@@ -1,0 +1,16 @@
+- @section = 'tournaments'
+#yui-main
+  .yui-b.box
+    %h3
+      = "Edit Match \# #{@match.position} For #{@tournament.name}"
+
+    = error_messages_for :match
+
+    - form_for [@user, @tournament, @match], :html => { :method => :put, :class => 'MainForm' } do |f|
+      %div= hidden_field_tag :position, @position
+      = render :partial => 'form', :object => f
+      %p= submit_tag 'Update', :or => link_to(:cancel.l, tournament_path(@tournament))
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to tournament', tournament_path(@tournament)

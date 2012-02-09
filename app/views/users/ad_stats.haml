@@ -1,0 +1,25 @@
+- @meta = { :description => AppConfig.meta_description, :keywords => AppConfig.meta_keywords, :robots => AppConfig.robots_meta_list_content }
+- @section = 'home'
+
+-unless logged_in?
+  =render :partial => 'base/homepage_banner_message'
+
+#yui-main
+  .yui-b
+    .box.hfeed
+      %h3
+        =#:recent_posts.l
+      =# render :partial => 'posts/post', :collection => @posts
+
+.yui-b
+  .box
+    %h3= "Stats" 
+    %ul.list.checks    
+      %li= link_to "Requests Sent", sent_url, {:class => 'popular'}
+      %li= link_to "Requests Accepted", accepted_url, {:class => 'popular'}
+      %li= link_to "Requests Denied", denied_url, {:class => 'popular'}
+      %li= link_to "Statistics", stats_url, {:class => 'popular'}
+     
+
+  
+ 

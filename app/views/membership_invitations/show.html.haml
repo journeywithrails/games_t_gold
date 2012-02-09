@@ -1,0 +1,25 @@
+- @meta = { :description => "#{@team.name.capitalize}.", :keywords => "#{@team.tags.join(', ') if @team.tags}", :robots => AppConfig.robots_meta_show_content}
+- @section = 'teams'
+- @page_title = "Invitation From #{@team.name}"
+
+#yui-main
+  .yui-b.box
+    %h3= @team.name
+
+    = team_origin(@team)
+
+    - unless @team.description.blank?
+      %p= sanitize(@team.description_html)
+
+    .box.alt.first_alt
+      %h3 You have been invited to become a member of this team
+      %p= link_to 'Accept Invitation', accept_team_invitation_path(@team, @membership_invitation), :method => :post
+      = link_to 'Reject', team_invitation_path(@team, @membership_invitation, :reject => '1'), :method => :delete
+
+.yui-b
+  .box.alt.first_alt
+    %h3 Logo
+    .box.centered= team_logo(@team)
+
+  .box.alt
+    = link_to '&raquo; View team profile', team_path(@team)

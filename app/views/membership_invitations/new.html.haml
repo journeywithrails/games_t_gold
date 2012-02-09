@@ -1,0 +1,23 @@
+#yui-main
+  .yui-b.box
+    %h3= "Invite people to join #{@team.name}"
+      
+    = error_messages_for :message
+
+    - form_for @membership_invitation, :url => team_invitations_path(@team), :html => {:class => "MainForm"} do |f|
+      %label From
+      %h4= "#{@team.name} Admins"
+
+      %label
+        To
+        %em= '(' + :type_a_username.l + ')'
+      = text_field_with_auto_complete :membership_invitation, :to, { :autocomplete => 'off' }, :url => auto_complete_for_membership_invitation_to_team_invitations_path(@team), :method => :get
+      
+      %label Your Message
+      = f.text_area :message, :rows => 7
+
+      %p= submit_tag 'Send invitation', :or => link_to(:cancel.l, team_path(@team))
+
+.yui-b
+  .box.alt.first_alt
+    = link_to 'Return to team profile', team_path(@team)

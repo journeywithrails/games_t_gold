@@ -1,0 +1,57 @@
+.MainForm
+  %label= :name.l
+  = form.text_field :name, :class => 'primary'
+
+  %label Number of Players
+  = form.text_field :number_of_players, :size => 10
+
+  #tournament_descripion
+    %label= :description.l
+    = form.text_area :description, :rows => 7
+
+  %label= :tags.l
+  = text_field_tag 'tag_list', @tournament.tag_list, { :autocomplete => 'off', :size => 35 }
+  #tag_list_auto_complete.auto_complete
+  = auto_complete_field 'tag_list', { :url => { :controller => 'tags', :action => 'auto_complete_for_tag_name' }, :tokens => [',', ' ']  }
+
+  %label Image
+  = form.file_field :uploaded_data 
+  %br
+  -if params[:action]=='edit' and !@tournament.filename.nil?
+    = image_tag @tournament.public_filename, :size => '50x50' 
+  -#else
+    =# link_to tournament_logo(@tournament'), tournament_path(@tournament)     
+    =# @tournament.public_filename if params[:action]=='edit'
+
+%br
+%label Status
+%br 
+%br
+= form.radio_button 'status', 'open'
+= "Open"
+&nbsp; &nbsp; &nbsp;
+= form.radio_button 'status', 'private'
+= "Private"
+
+.MainForm
+  %h3 Schedule and Venue
+  %label From
+  = form.date_select :from, :order => [ :month, :day, :year ]
+
+  %label To
+  = form.date_select :to, :order => [ :month, :day, :year ], :include_blank => true
+
+  %label Signup By
+  = form.date_select :signup_date, :order => [ :month, :day, :year ], :include_blank => true
+
+  %label Venue
+  = form.text_field :venue
+
+  %h3 Rules and Requirements
+  #tournament_rules
+    %label Rules
+    = form.text_area :rules, :rows => 7
+
+  #tournament_equipment
+    %label Required/Recommended Equipment
+    = form.text_area :equipment, :rows => 5
